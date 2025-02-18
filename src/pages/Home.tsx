@@ -48,8 +48,21 @@ const Home: React.FC = () => {
             <h1>Your Path to Financial Freedom Starts Here</h1>
             <p>Compare and find the best loan options tailored to your needs</p>
             <div className="hero-buttons">
-              <Link to="/compare" className="primary-button">Compare Loans</Link>
-              <Link to="/about" className="secondary-button">Learn More</Link>
+              <Link to="/compare" className="btn-compare">
+                <div id="container-stars">
+                  <div id="stars"></div>
+                </div>
+                <div id="glow">
+                  <div className="circle-container">
+                    <div className="circle"></div>
+                  </div>
+                  <div className="circle-container">
+                    <div className="circle"></div>
+                  </div>
+                </div>
+                <strong>COMPARE LOANS</strong>
+              </Link>
+              <Link to="/about" className="glow-button">LEARN MORE</Link>
             </div>
           </div>
         </div>

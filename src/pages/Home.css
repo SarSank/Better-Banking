@@ -1,15 +1,17 @@
 /* Global Styles */
 :root {
-  --color-primary: #10b981;
-  --color-primary-dark: #059669;
-  --color-cream: #fdfaf6;
-  --color-cream-dark: #f7f2ea;
-  --color-text: #1f2937;
-  --color-text-light: #4b5563;
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --color-primary: #00ff9d;
+  --color-primary-dark: #00cc7d;
+  --color-background: #121212;
+  --color-surface: #1e1e1e;
+  --color-surface-light: #2d2d2d;
+  --color-text: #ffffff;
+  --color-text-light: #b3b3b3;
+  --color-accent: #0066ff;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.4);
 }
 
 .container {
@@ -36,12 +38,13 @@
 
 /* Hero Section */
 .hero-section {
-  background: linear-gradient(to right, var(--color-cream), var(--color-cream-dark));
+  background: linear-gradient(to right, var(--color-background), var(--color-surface));
   padding: 5rem 0;
 }
 
 .hero-content {
   max-width: 800px;
+  position: relative;
 }
 
 .hero-content h1 {
@@ -58,14 +61,20 @@
   margin-bottom: 2rem;
 }
 
-.button-group {
+.hero-buttons {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2rem;
+}
+
+.hero-buttons .btn-compare {
+  margin-right: 3rem;
 }
 
 .primary-button {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-background);
   padding: 1rem 2rem;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -80,23 +89,254 @@
 }
 
 .secondary-button {
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
-.secondary-button:hover {
-  background-color: var(--color-cream-dark);
+.secondary-button.btn-compare {
+  margin-left: 1rem;
+}
+
+/* Button Styles */
+.btn-compare {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 13rem;
+  overflow: hidden;
+  height: 3rem;
+  background-size: 300% 300%;
+  backdrop-filter: blur(1rem);
+  border-radius: 5rem;
+  transition: 0.5s;
+  animation: gradient_301 5s ease infinite;
+  border: double 4px transparent;
+  background-image: linear-gradient(#161a25, #161a25),
+    linear-gradient(
+      137.48deg,
+      #f5434f 10%,
+      #631e29 45%,
+      #000000 67%,
+      #161a25 87%
+    );
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  font-family: "Orbitron", sans-serif;
+  cursor: pointer;
+  position: relative;
+}
+
+.btn-compare #container-stars {
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: 0.5s;
+  backdrop-filter: blur(1rem);
+  border-radius: 5rem;
+}
+
+.btn-compare strong {
+  z-index: 2;
+  font-family: "Orbitron", sans-serif;
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: #ffffff;
+  text-shadow: 0 0 4px white;
+}
+
+.btn-compare #glow {
+  position: absolute;
+  display: flex;
+  width: 12rem;
+}
+
+.btn-compare .circle-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: orbit 5s linear infinite;
+}
+
+.btn-compare .circle {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  filter: blur(2rem);
+}
+
+.btn-compare .circle:nth-of-type(1) {
+  background: rgba(245, 67, 79, 0.636);
+  animation: orbit 8s linear infinite;
+}
+
+.btn-compare .circle:nth-of-type(2) {
+  background: rgba(99, 30, 41, 0.704);
+  animation: orbit 10s linear infinite;
+}
+
+.btn-compare:hover #container-stars {
+  z-index: 1;
+  background-color: #161a25;
+}
+
+.btn-compare:hover {
+  transform: scale(1.1);
+}
+
+.btn-compare:active {
+  border: double 4px #631e29;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  animation: none;
+}
+
+.btn-compare:active .circle {
+  background: #631e29;
+}
+
+.btn-compare #stars {
+  position: relative;
+  background: transparent;
+  width: 200rem;
+  height: 200rem;
+}
+
+.btn-compare #stars::after {
+  content: "";
+  position: absolute;
+  top: -10rem;
+  left: -100rem;
+  width: 100%;
+  height: 100%;
+  animation: animStarRotate 90s linear infinite;
+  background-image: radial-gradient(#ffffff 1px, transparent 1%);
+  background-size: 50px 50px;
+}
+
+.btn-compare #stars::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 170%;
+  height: 500%;
+  animation: animStar 60s linear infinite;
+  background-image: radial-gradient(#ffffff 1px, transparent 1%);
+  background-size: 50px 50px;
+  opacity: 0.5;
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(100px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(100px) rotate(-360deg);
+  }
+}
+
+@keyframes animStar {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-135rem);
+  }
+}
+
+@keyframes animStarRotate {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0);
+  }
+}
+
+@keyframes gradient_301 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse_3011 {
+  0% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(0.75);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* Glow Button Styles */
+.glow-button {
+  --glow-color: rgb(217, 176, 255);
+  --glow-spread-color: rgba(191, 123, 255, 0.781);
+  --enhanced-glow-color: rgb(231, 206, 255);
+  --btn-color: rgb(100, 61, 136);
+  border: .25em solid var(--glow-color);
+  padding: 1em 3em;
+  color: var(--glow-color);
+  font-size: 15px;
+  font-weight: bold;
+  background-color: var(--btn-color);
+  border-radius: 1em;
+  outline: none;
+  box-shadow: 0 0 1em .25em var(--glow-color),
+         0 0 4em 1em var(--glow-spread-color),
+         inset 0 0 .75em .25em var(--glow-color);
+  text-shadow: 0 0 .5em var(--glow-color);
+  position: relative;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.glow-button::after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 120%;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: var(--glow-spread-color);
+  filter: blur(2em);
+  opacity: .7;
+  transform: perspective(1.5em) rotateX(35deg) scale(1, .6);
+}
+
+.glow-button:hover {
+  color: var(--btn-color);
+  background-color: var(--glow-color);
+  box-shadow: 0 0 1em .25em var(--glow-color),
+         0 0 4em 2em var(--glow-spread-color),
+         inset 0 0 .75em .25em var(--glow-color);
+}
+
+.glow-button:active {
+  box-shadow: 0 0 0.6em .25em var(--glow-color),
+         0 0 2.5em 2em var(--glow-spread-color),
+         inset 0 0 .5em .25em var(--glow-color);
 }
 
 /* Loan Types Section */
 .loan-types-section {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   padding: 5rem 0;
 }
 
@@ -114,7 +354,7 @@
 }
 
 .loan-card {
-  background-color: white;
+  background-color: var(--color-background);
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: var(--shadow-md);
@@ -129,7 +369,7 @@
 }
 
 .icon-container {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface-light);
   width: 3rem;
   height: 3rem;
   border-radius: 0.5rem;
@@ -179,7 +419,7 @@
 
 /* How It Works Section */
 .how-it-works-section {
-  background-color: white;
+  background-color: var(--color-surface);
   padding: 5rem 0;
 }
 
@@ -208,7 +448,7 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1rem;
-  background-color: var(--color-cream);
+  background-color: var(--color-background);
   border-radius: 1rem;
   transition: transform 0.3s ease;
 }
@@ -218,7 +458,7 @@
 }
 
 .step-icon {
-  background-color: white;
+  background-color: var(--color-surface-light);
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
@@ -302,7 +542,7 @@
 
 /* Benefits Section */
 .benefits-section {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   padding: 5rem 0;
 }
 
@@ -320,7 +560,7 @@
 }
 
 .benefit-card {
-  background-color: white;
+  background-color: var(--color-background);
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: var(--shadow-md);
@@ -349,7 +589,7 @@
 /* CTA Section */
 .cta-section {
   background-color: var(--color-primary);
-  color: white;
+  color: var(--color-background);
   padding: 5rem 0;
   text-align: center;
 }
@@ -371,7 +611,7 @@
 .cta-button {
   display: inline-flex;
   align-items: center;
-  background-color: white;
+  background-color: var(--color-background);
   color: var(--color-primary);
   padding: 1rem 2rem;
   border-radius: 0.5rem;
@@ -381,7 +621,7 @@
 }
 
 .cta-button:hover {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface-light);
 }
 
 .arrow-icon {
@@ -392,7 +632,7 @@
 
 /* FAQ Section */
 .faq-section {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   padding: 5rem 0;
 }
 
@@ -411,7 +651,7 @@
 }
 
 .faq-card {
-  background-color: white;
+  background-color: var(--color-background);
   padding: 1.5rem;
   border-radius: 1rem;
   box-shadow: var(--shadow-md);
@@ -429,7 +669,7 @@
 
 /* Financial Tools Section */
 .financial-tools-section {
-  background-color: var(--color-cream);
+  background-color: var(--color-surface);
   padding: 5rem 0;
 }
 
@@ -463,7 +703,7 @@
 }
 
 .tool-card {
-  background-color: white;
+  background-color: var(--color-background);
   padding: 2rem;
   border-radius: 1rem;
   box-shadow: var(--shadow-md);
@@ -510,7 +750,7 @@
     font-size: 1.125rem;
   }
 
-  .button-group {
+  .hero-buttons {
     flex-direction: column;
   }
 
