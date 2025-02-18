@@ -1,0 +1,42 @@
+.disabled-input {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    cursor: not-allowed;
+    border: 1px solid #e5e7eb;
+}
+
+.disabled-input:hover {
+    border-color: #e5e7eb;
+}
+
+.loan-eligibility-summary {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.eligibility-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detail-item label {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.detail-item span {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+} 

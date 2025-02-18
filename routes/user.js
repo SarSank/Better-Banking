@@ -33,98 +33,86 @@ router.get('/details', auth, async (req, res) => {
 // Update user profile
 router.post('/details', auth, async (req, res) => {
     try {
-        console.log('Request received:', {
-            body: req.body,
-            userId: req.user.id,
-            headers: req.headers
-        });
+        const { profile } = req.body;
+        
+        // Log the received data
+        console.log('Received profile update:', profile);
 
         const user = await User.findById(req.user.id);
+        
         if (!user) {
-            console.log('User not found:', req.user.id);
-            return res.status(404).json({ 
-                success: false,
-                message: 'User not found' 
-            });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        if (!req.body.profile) {
-            console.log('Missing profile data in request');
-            return res.status(400).json({
-                success: false,
-                message: 'Profile data is required'
-            });
-        }
-
-        // Update user profile
+        // Update all profile fields
         user.profile = {
-            fullName: req.body.profile.fullName,
-            dateOfBirth: req.body.profile.dateOfBirth || '',
-            phone: req.body.profile.phone,
-            address: req.body.profile.address,
-            panCard: req.body.profile.panCard || '',
-            aadharNumber: req.body.profile.aadharNumber || '',
-            occupation: req.body.profile.occupation || '',
-            annualIncome: Number(req.body.profile.annualIncome) || 0
+            ...user.profile,
+            fullName: profile.fullName,
+            phone: profile.phone,
+            address: profile.address,
+            dateOfBirth: profile.dateOfBirth,
+            age: profile.age,
+            panCard: profile.panCard,
+            aadharNumber: profile.aadharNumber,
+            occupation: profile.occupation
         };
 
         await user.save();
-        
-        const responseData = {
+
+        // Send back the updated user data
+        res.json({
             success: true,
-            message: 'Profile updated successfully',
             user: {
-                _id: user._id,
                 email: user.email,
-                username: user.username,
-                profile: user.profile,
-                createdAt: user.createdAt
+                profile: user.profile
             }
-        };
-
-        console.log('Sending response:', responseData);
-        res.json(responseData);
-
-    } catch (error) {
-        console.error('Error in profile update:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
+    } catch (error) {
+        console.error('Profile update error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 
-// Add this route to store comparison data
-router.post('/comparisons', auth, async (req, res) => {
+// Save comparison data
+router.post('/comparison', auth, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
-            return res.status(404).json({ 
-                success: false,
-                message: 'User not found' 
-            });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         // Add comparison to user's history
-        user.comparisons = user.comparisons || [];
-        user.comparisons.push({
-            ...req.body,
+        user.comparisons.unshift({
+            formData: req.body.formData,
+            creditScore: req.body.creditScore,
+            eligibility: req.body.eligibility,
             date: new Date()
         });
 
         await user.save();
 
-        res.json({ 
-            success: true,
-            message: 'Comparison saved successfully'
-        });
+        res.json({ success: true, message: 'Comparison saved successfully' });
     } catch (error) {
         console.error('Error saving comparison:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to save comparison'
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// Get latest comparison
+router.get('/latest-comparison', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user || !user.comparisons.length) {
+            return res.json({ success: true, comparison: null });
+        }
+
+        res.json({ 
+            success: true, 
+            comparison: user.comparisons[0] 
         });
+    } catch (error) {
+        console.error('Error fetching comparison:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 

@@ -1,18 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CarLoanCalculator.css';
 
-interface Props {
-    bankRates: {
-        baseRate: number;
+interface CarLoanCalculatorProps {
+    bankRates: any;
+    loanData: {
+        creditScore: number;
+        employmentType: string;
+        annualIncome: string;
     };
 }
 
-const CarLoanCalculator: React.FC<Props> = ({ bankRates }) => {
+const CarLoanCalculator: React.FC<CarLoanCalculatorProps> = ({ bankRates, loanData }) => {
     const [loanAmount, setLoanAmount] = useState('');
-    const [tenure, setTenure] = useState('60'); // 60 months = 5 years
+    const [tenure, setTenure] = useState('5');
+    const [interestRate, setInterestRate] = useState('');
     const [error, setError] = useState('');
     const [emi, setEmi] = useState<number | null>(null);
     const [totalPayment, setTotalPayment] = useState<number | null>(null);
+
+    const calculateCarLoanRate = (creditScore: number, rates: any) => {
+        const baseRate = rates.baseRate || 9.10;
+        
+        if (creditScore >= 800) return baseRate - 0.5;
+        if (creditScore >= 750) return baseRate - 0.25;
+        if (creditScore >= 700) return baseRate;
+        return baseRate + 0.5;
+    };
+
+    useEffect(() => {
+        if (!loanData) return;
+
+        // Set interest rate based on credit score
+        const rate = calculateCarLoanRate(loanData.creditScore, bankRates);
+        if (rate) {
+            setInterestRate(rate.toString());
+        }
+
+        // Set max loan amount based on annual income
+        if (loanData.annualIncome) {
+            const maxLoanAmount = Math.min(
+                parseFloat(loanData.annualIncome) * 0.8, // 80% of annual income
+                5000000 // 50L cap
+            );
+            setLoanAmount(maxLoanAmount.toString());
+        }
+    }, [loanData, bankRates]);
 
     const calculateLoan = () => {
         setError('');
@@ -25,7 +57,7 @@ const CarLoanCalculator: React.FC<Props> = ({ bankRates }) => {
         }
 
         const amount = Number(loanAmount);
-        const rate = bankRates.baseRate;
+        const rate = Number(interestRate);
         const months = Number(tenure);
         
         // Calculate EMI

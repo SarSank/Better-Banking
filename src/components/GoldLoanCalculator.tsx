@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './GoldLoanCalculator.css';
 
-interface Props {
-    bankRates: {
-        rates: {
-            [key: number]: {
-                [key: number]: number;
-            };
-        };
+interface GoldLoanCalculatorProps {
+    bankRates: any;
+    loanData: {
+        creditScore: number;
+        employmentType: string;
+        annualIncome: string;
     };
 }
 
-const GoldLoanCalculator: React.FC<Props> = ({ bankRates }) => {
+const GoldLoanCalculator: React.FC<GoldLoanCalculatorProps> = ({ bankRates, loanData }) => {
     const [karat, setKarat] = useState('24');
     const [tenure, setTenure] = useState('6');
     const [ornaments, setOrnaments] = useState('1');

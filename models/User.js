@@ -1,21 +1,30 @@
 import mongoose from 'mongoose';
 
 const ComparisonSchema = new mongoose.Schema({
-    comparison: {
-        loanAmount: String,
-        loanType: String,
+    formData: {
+        fullName: String,
+        age: String,
+        cityRegion: String,
+        annualIncome: String,
         employmentType: String,
-        monthlyIncome: String,
-        cibilScore: String
+        yearsInCurrentJob: String,
+        desiredLoanAmount: String,
+        hasPreviousLoans: String,
+        previousLoans: [{
+            loanAmount: String,
+            emiAmount: String,
+            loanAge: String,
+            interestRate: String
+        }],
+        loanRejectionHistory: String,
+        avgCreditCardUsage: String
     },
-    results: [{
-        bankName: String,
-        interestRate: String,
-        emi: Number,
-        eligibleAmount: Number,
-        processingFee: String,
-        tenure: Number
-    }],
+    creditScore: Number,
+    eligibility: {
+        home: Object,
+        car: Object,
+        gold: Object
+    },
     date: {
         type: Date,
         default: Date.now
@@ -38,38 +47,14 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     profile: {
-        fullName: {
-            type: String,
-            default: ''
-        },
-        dateOfBirth: {
-            type: String,
-            default: ''
-        },
-        phone: {
-            type: String,
-            default: ''
-        },
-        address: {
-            type: String,
-            default: ''
-        },
-        panCard: {
-            type: String,
-            default: ''
-        },
-        aadharNumber: {
-            type: String,
-            default: ''
-        },
-        occupation: {
-            type: String,
-            default: ''
-        },
-        annualIncome: {
-            type: Number,
-            default: 0
-        }
+        fullName: String,
+        phone: String,
+        address: String,
+        dateOfBirth: String,
+        age: String,
+        panCard: String,
+        aadharNumber: String,
+        occupation: String
     },
     bankingDetails: {
         accountNumber: String,

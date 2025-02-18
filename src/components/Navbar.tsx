@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Building2, LogIn, LogOut, Menu, X, User } from 'lucide-react';
 import AuthModal from './AuthModal';
 import './Navbar.css';
@@ -10,6 +10,7 @@ const Navbar: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check if user is logged in
@@ -17,10 +18,21 @@ const Navbar: React.FC = () => {
     setIsLoggedIn(!!token);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-    navigate('/');
+  const handleAuthClick = () => {
+    if (isLoggedIn) {
+      localStorage.removeItem('token');
+      setIsLoggedIn(false);
+      navigate('/');
+    } else {
+      setIsAuthModalOpen(true);
+    }
+  };
+
+  const handleLoginSuccess = () => {
+    setIsAuthModalOpen(false);
+    setIsLoggedIn(true);
+    // Stay on the current page after login
+    window.location.reload(); // This will refresh the current page
   };
 
   return (
@@ -60,7 +72,7 @@ const Navbar: React.FC = () => {
               <button onClick={() => navigate('/profile')} className="profile-button">
                 <User className="button-icon" />
               </button>
-              <button onClick={handleLogout} className="auth-button logout">
+              <button onClick={handleAuthClick} className="auth-button logout">
                 <LogOut className="button-icon" />
                 Logout
               </button>
@@ -114,7 +126,7 @@ const Navbar: React.FC = () => {
               <button onClick={() => navigate('/profile')} className="profile-button">
                 <User className="button-icon" />
               </button>
-              <button onClick={handleLogout} className="auth-button logout">
+              <button onClick={handleAuthClick} className="auth-button logout">
                 <LogOut className="button-icon" />
                 Logout
               </button>
@@ -132,7 +144,8 @@ const Navbar: React.FC = () => {
 
       <AuthModal 
         isOpen={isAuthModalOpen} 
-        onClose={() => setIsAuthModalOpen(false)} 
+        onClose={() => setIsAuthModalOpen(false)}
+        onLoginSuccess={handleLoginSuccess}
       />
     </nav>
   );

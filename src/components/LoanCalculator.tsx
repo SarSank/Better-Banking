@@ -1,29 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoanCalculator.css';
 
-interface Props {
-    bankRates: {
-        cibilRates: any[];
-        slabRates: any[];
-    };
+interface LoanCalculatorProps {
+    bankRates: any;
     employmentType: 'salaried' | 'selfEmployed';
+    loanData: {
+        creditScore: number;
+        employmentType: string;
+        annualIncome: string;
+    };
 }
 
-const LoanCalculator: React.FC<Props> = ({ bankRates, employmentType }) => {
+const LoanCalculator: React.FC<LoanCalculatorProps> = ({ bankRates, employmentType, loanData }) => {
     const [loanAmount, setLoanAmount] = useState('');
     const [tenure, setTenure] = useState('20');
     const [cibilScore, setCibilScore] = useState('');
     const [error, setError] = useState('');
     const [emi, setEmi] = useState<number | null>(null);
     const [totalPayment, setTotalPayment] = useState<number | null>(null);
-    const [interestRate, setInterestRate] = useState<number | null>(null);
+    const [interestRate, setInterestRate] = useState('');
+
+    useEffect(() => {
+        if (!loanData) return;
+
+        // Set interest rate based on credit score and employment type
+        const rate = calculateInterestRate(loanData.creditScore, employmentType, bankRates);
+        if (rate) {
+            setInterestRate(rate.toString());
+            setCibilScore(loanData.creditScore.toString());
+        }
+
+        // Set max loan amount based on annual income
+        if (loanData.annualIncome) {
+            const maxLoanAmount = calculateMaxLoanAmount(loanData.annualIncome);
+            setLoanAmount(maxLoanAmount.toString());
+        }
+    }, [loanData, employmentType, bankRates]);
+
+    const calculateInterestRate = (creditScore: number, empType: string, rates: any) => {
+        if (!rates || !rates.cibilRates) return null;
+        
+        if (creditScore >= 800) {
+            return empType === 'salaried' ? 9.00 : 9.00;
+        } else if (creditScore >= 750) {
+            return empType === 'salaried' ? 9.00 : 9.10;
+        } else if (creditScore >= 700) {
+            return empType === 'salaried' ? 9.25 : 9.40;
+        } else {
+            return empType === 'salaried' ? 9.50 : 9.65;
+        }
+    };
+
+    const calculateMaxLoanAmount = (annualIncome: string) => {
+        // Convert annual income to number
+        const income = parseFloat(annualIncome.replace(/,/g, ''));
+        // Typically, banks allow up to 60 times monthly income
+        return Math.min(income * 5, 10000000); // Cap at 1 Cr
+    };
 
     const calculateLoan = () => {
         // Reset previous results and errors
         setError('');
         setEmi(null);
         setTotalPayment(null);
-        setInterestRate(null);
 
         // Validate inputs
         if (!loanAmount) {
@@ -47,27 +86,8 @@ const LoanCalculator: React.FC<Props> = ({ bankRates, employmentType }) => {
             return;
         }
 
-        // Calculate interest rate based on CIBIL score and loan amount
-        let rate: number;
-        if (score > 800) {
-            rate = Number(bankRates.cibilRates[0][employmentType]);
-        } else if (score >= 750) {
-            rate = Number(bankRates.cibilRates[1][employmentType]);
-        } else {
-            // Use slab based rates
-            if (amount <= 3500000) {
-                rate = Number(bankRates.slabRates[0][employmentType].split(' - ')[0]);
-            } else if (amount <= 7500000) {
-                rate = Number(bankRates.slabRates[1][employmentType].split(' - ')[0]);
-            } else {
-                rate = Number(bankRates.slabRates[2][employmentType].split(' - ')[0]);
-            }
-        }
-        
-        setInterestRate(rate);
-        
         // Calculate EMI
-        const monthlyRate = rate / (12 * 100);
+        const monthlyRate = Number(interestRate) / (12 * 100);
         const months = Number(tenure) * 12;
         const emiAmount = (amount * monthlyRate * Math.pow(1 + monthlyRate, months)) / 
                         (Math.pow(1 + monthlyRate, months) - 1);

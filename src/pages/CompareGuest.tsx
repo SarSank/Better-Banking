@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// This is for users who haven't signed up
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Lock, Shield, Plus, Trash } from 'lucide-react';
 import './Compare.css';
 import { calculateCreditScore, getLoanEligibility } from '../utils/creditScore';
 import { formatNumberWithCommas, parseFormattedNumber } from '../utils/formatNumber';
-import axiosInstance from '../utils/axios';
+import AuthModal from '../components/AuthModal';
 
 interface LoanHistory {
     loanAmount: string;
@@ -15,7 +15,7 @@ interface LoanHistory {
 }
 
 interface CompareFormData {
-    // Basic Information
+    // Basic Information (required for guest users)
     fullName: string;
     age: string;
     cityRegion: string;
@@ -24,8 +24,6 @@ interface CompareFormData {
     annualIncome: string;
     employmentType: 'Salaried' | 'Self-Employed' | 'Unemployed' | '';
     yearsInCurrentJob: string;
-    
-    // Loan Details
     desiredLoanAmount: string;
     
     // Previous Loans
@@ -34,17 +32,10 @@ interface CompareFormData {
     
     // Credit History
     loanRejectionHistory: 'Yes' | 'No' | '';
-    
-    // Credit Card Usage
     avgCreditCardUsage: string;
 }
 
-interface UserProfile {
-    fullName: string;
-    age: string;
-}
-
-const Compare: React.FC = () => {
+const CompareGuest: React.FC = () => {
     const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState<number>(1);
     const [formData, setFormData] = useState<CompareFormData>({
@@ -60,45 +51,10 @@ const Compare: React.FC = () => {
         loanRejectionHistory: '',
         avgCreditCardUsage: ''
     });
-    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [creditScore, setCreditScore] = useState<number | null>(null);
-    const [hasCompletedComparison, setHasCompletedComparison] = useState(false);
-    const [eligibilityData, setEligibilityData] = useState<any>(null);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
     const totalSteps = 4;
     const progress = (currentStep / totalSteps) * 100;
-
-    useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await axiosInstance.get('/api/user/details');
-                if (response.data.success && response.data.user.profile) {
-                    setUserProfile({
-                        fullName: response.data.user.profile.fullName,
-                        age: response.data.user.profile.age
-                    });
-                }
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
-
-    useEffect(() => {
-        // Load saved comparison data if it exists
-        const savedData = localStorage.getItem('comparisonData');
-        if (savedData) {
-            const { formData: savedFormData, creditScore: savedScore, completed } = JSON.parse(savedData);
-            setFormData(savedFormData);
-            setCreditScore(savedScore);
-            setHasCompletedComparison(completed);
-        }
-    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -121,7 +77,6 @@ const Compare: React.FC = () => {
                 previousLoans: []
             }));
         } else if (isAmountField(name)) {
-            // Only format if there's a value
             const formattedValue = value ? formatNumberWithCommas(value) : '';
             setFormData(prev => ({
                 ...prev,
@@ -133,6 +88,16 @@ const Compare: React.FC = () => {
                 [name]: value
             }));
         }
+    };
+
+    const isAmountField = (fieldName: string): boolean => {
+        return [
+            'annualIncome',
+            'desiredLoanAmount',
+            'avgCreditCardUsage',
+            'loanAmount',
+            'emiAmount'
+        ].includes(fieldName);
     };
 
     const handleLoanHistoryChange = (index: number, field: keyof LoanHistory, value: string) => {
@@ -160,64 +125,29 @@ const Compare: React.FC = () => {
     };
 
     const removeLoan = (index: number) => {
-        if (formData.previousLoans.length > 1) {
-            setFormData(prev => ({
-                ...prev,
-                previousLoans: prev.previousLoans.filter((_, i) => i !== index)
-            }));
-        }
-    };
-
-    const validateCurrentStep = (): boolean => {
-        switch (currentStep) {
-            case 1:
-                if (userProfile) {
-                    return Boolean(formData.cityRegion);
-                }
-                return Boolean(
-                    formData.fullName &&
-                    formData.age &&
-                    formData.cityRegion
-                );
-            case 2: // Financial & Employment
-                return Boolean(
-                    formData.annualIncome &&
-                    formData.employmentType &&
-                    formData.yearsInCurrentJob &&
-                    formData.desiredLoanAmount
-                );
-            case 3: // Loan History
-                if (formData.hasPreviousLoans === 'Yes') {
-                    return formData.previousLoans.every(loan => 
-                        loan.loanAmount && 
-                        loan.emiAmount && 
-                        loan.loanAge
-                    );
-                }
-                return formData.hasPreviousLoans === 'No' || formData.hasPreviousLoans === 'Yes';
-            case 4: // Credit History
-                return Boolean(
-                    formData.loanRejectionHistory &&
-                    formData.avgCreditCardUsage
-                );
-            default:
-                return false;
-        }
-    };
-
-    // Helper function to check if a field is an amount field
-    const isAmountField = (fieldName: string): boolean => {
-        return [
-            'annualIncome',
-            'desiredLoanAmount',
-            'avgCreditCardUsage',
-            'loanAmount',
-            'emiAmount'
-        ].includes(fieldName);
+        setFormData(prev => ({
+            ...prev,
+            previousLoans: prev.previousLoans.filter((_, i) => i !== index)
+        }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Store form data in localStorage before redirecting
+        localStorage.setItem('tempCompareData', JSON.stringify(formData));
+
+        // Ask user if they want to sign up
+        const wantsToSignUp = window.confirm(
+            'Would you like to create an account to save your comparison and get personalized recommendations?'
+        );
+
+        if (wantsToSignUp) {
+            setIsAuthModalOpen(true);
+            return;
+        }
+
+        // If user doesn't want to sign up, proceed with comparison
         try {
             const parsedFormData = {
                 ...formData,
@@ -231,62 +161,63 @@ const Compare: React.FC = () => {
                 }))
             };
 
-            // Calculate credit score
-            const calculatedScore = calculateCreditScore(parsedFormData);
-            setCreditScore(calculatedScore);
-
-            // Calculate eligibility for all loan types
-            const newEligibilityData = {
-                home: getLoanEligibility(calculatedScore, 'home'),
-                car: getLoanEligibility(calculatedScore, 'car'),
-                gold: getLoanEligibility(calculatedScore, 'gold')
+            const creditScore = calculateCreditScore(parsedFormData);
+            const eligibility = {
+                home: getLoanEligibility(creditScore, 'home'),
+                car: getLoanEligibility(creditScore, 'car'),
+                gold: getLoanEligibility(creditScore, 'gold')
             };
 
-            // Set eligibility data in state
-            setEligibilityData(newEligibilityData);
-
-            // Save comparison data to localStorage
-            const comparisonData = {
-                formData: parsedFormData,
-                creditScore: calculatedScore,
-                eligibility: newEligibilityData,
-                completed: true
-            };
-            
-            localStorage.setItem('comparisonData', JSON.stringify(comparisonData));
-
-            // Save to backend
-            await axiosInstance.post('/api/user/comparison', {
-                formData: parsedFormData,
-                creditScore: calculatedScore,
-                eligibility: newEligibilityData
+            navigate('/loan-eligibility', { 
+                state: { 
+                    creditScore,
+                    eligibility,
+                    userData: parsedFormData
+                } 
             });
-
-            setHasCompletedComparison(true);
-
         } catch (error) {
-            console.error('Error submitting comparison:', error);
+            console.error('Error processing comparison:', error);
         }
     };
 
-    const handleRecompare = () => {
-        localStorage.removeItem('comparisonData');
-        setFormData({
-            fullName: '',
-            age: '',
-            cityRegion: '',
-            annualIncome: '',
-            employmentType: '',
-            yearsInCurrentJob: '',
-            desiredLoanAmount: '',
-            hasPreviousLoans: '',
-            previousLoans: [],
-            loanRejectionHistory: '',
-            avgCreditCardUsage: ''
-        });
-        setCreditScore(null);
-        setHasCompletedComparison(false);
-        setCurrentStep(1);
+    const validateCurrentStep = (): boolean => {
+        switch (currentStep) {
+            case 1:
+                return Boolean(
+                    formData.fullName &&
+                    formData.age &&
+                    formData.cityRegion
+                );
+            case 2:
+                return Boolean(
+                    formData.annualIncome &&
+                    formData.employmentType &&
+                    formData.yearsInCurrentJob &&
+                    formData.desiredLoanAmount
+                );
+            case 3:
+                // If hasPreviousLoans is 'No', allow proceeding
+                if (formData.hasPreviousLoans === 'No') {
+                    return true;
+                }
+                // If hasPreviousLoans is 'Yes', check if loans are filled out
+                if (formData.hasPreviousLoans === 'Yes') {
+                    return formData.previousLoans.every(loan => 
+                        loan.loanAmount && 
+                        loan.emiAmount && 
+                        loan.loanAge
+                    );
+                }
+                // If nothing is selected, return false
+                return false;
+            case 4:
+                return Boolean(
+                    formData.loanRejectionHistory &&
+                    formData.avgCreditCardUsage
+                );
+            default:
+                return false;
+        }
     };
 
     const renderStep = () => {
@@ -295,31 +226,27 @@ const Compare: React.FC = () => {
                 return (
                     <div className="form-step">
                         <h2>Basic Information</h2>
-                        {!userProfile ? (
-                            <>
-                                <div className="form-group">
-                                    <label>Full Name</label>
-                                    <input
-                                        type="text"
-                                        name="fullName"
-                                        value={formData.fullName}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Age</label>
-                                    <input
-                                        type="text"
-                                        name="age"
-                                        value={formData.age}
-                                        onChange={handleChange}
-                                        placeholder="0"
-                                        required
-                                    />
-                                </div>
-                            </>
-                        ) : null}
+                        <div className="form-group">
+                            <label>Full Name</label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Age</label>
+                            <input
+                                type="text"
+                                name="age"
+                                value={formData.age}
+                                onChange={handleChange}
+                                placeholder="0"
+                                required
+                            />
+                        </div>
                         <div className="form-group">
                             <label>City/Region</label>
                             <input
@@ -525,43 +452,6 @@ const Compare: React.FC = () => {
         }
     };
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (hasCompletedComparison && creditScore && eligibilityData) {
-        return (
-            <div className="comparison-complete">
-                <h2>Comparison Complete</h2>
-                <div className="credit-score">
-                    <p>Your Credit Score</p>
-                    <span>{creditScore}</span>
-                </div>
-                <div className="action-buttons">
-                    <button onClick={handleRecompare} className="recompare-button">
-                        Start New Comparison
-                    </button>
-                    <button 
-                        onClick={() => {
-                            if (creditScore && eligibilityData) {
-                                const stateData = {
-                                    creditScore,
-                                    eligibility: eligibilityData,
-                                    userData: formData
-                                };
-                                console.log('Navigating with state:', stateData); // Debug log
-                                navigate('/loan-eligibility', { state: stateData });
-                            }
-                        }} 
-                        className="view-results-button"
-                    >
-                        View Results
-                    </button>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="compare-page">
             <div className="loan-application-container">
@@ -580,7 +470,6 @@ const Compare: React.FC = () => {
                             <div
                                 key={i}
                                 className={`step-dot ${i + 1 <= currentStep ? 'active' : ''}`}
-                                data-step={i + 1}
                             />
                         ))}
                     </div>
@@ -631,8 +520,12 @@ const Compare: React.FC = () => {
                     </div>
                 </form>
             </div>
+            <AuthModal 
+                isOpen={isAuthModalOpen} 
+                onClose={() => setIsAuthModalOpen(false)} 
+            />
         </div>
     );
 };
 
-export default Compare;
+export default CompareGuest; 
