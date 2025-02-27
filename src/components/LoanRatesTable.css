@@ -1,31 +1,61 @@
 .loan-rates-table {
-    background: white;
+    width: 100%;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: hidden;
+    background: #121212;
     margin: 1rem 0;
 }
 
 .table-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background: #f8f9fa;
-    font-weight: bold;
     padding: 1rem;
-    border-bottom: 2px solid #dee2e6;
+    background: #1e1e1e;
+    border-bottom: 2px solid #333333;
+}
+
+.table-header div {
+    color: #00ff9d;
+    font-weight: 600;
+    font-size: 1rem;
 }
 
 .table-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #333333;
+    transition: background-color 0.3s ease;
 }
 
 .table-row:last-child {
     border-bottom: none;
 }
 
-.table-row:nth-child(even) {
-    background: #f8f9fa;
-} 
+.table-row:hover {
+    background: #1e1e1e;
+}
+
+.table-row div {
+    color: #ffffff;
+}
+
+/* Special styling for CIBIL score ranges */
+.table-row div:first-child {
+    font-weight: 500;
+}
+
+/* Special styling for interest rates */
+.table-row div:last-child {
+    color: #00ff9d;
+    font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .table-header div,
+    .table-row div {
+        font-size: 0.875rem;
+        padding: 0.75rem;
+    }
+}

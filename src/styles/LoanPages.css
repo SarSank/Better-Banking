@@ -3,8 +3,9 @@
     margin: 0 auto;
     padding: 2rem;
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(180deg, rgba(248,250,252,0.8) 0%, rgba(241,245,249,0.8) 100%);
+    background: #000000;
     min-height: 100vh;
+    color: #ffffff;
 }
 
 .loan-page-header {
@@ -22,34 +23,29 @@
     transform: translateX(-50%);
     width: 100vw;
     height: 100%;
-    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(37,99,235,0.1));
+    background: #121212;
     z-index: -1;
 }
 
 .loan-page-header h1 {
     font-size: 3rem;
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #00ff9d;
     margin-bottom: 1rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
 }
 
 .loan-page-header p {
-    color: #64748b;
-    font-size: 1.125rem;
-    max-width: 600px;
+    font-size: 1.2rem;
+    color: #ffffff;
+    max-width: 800px;
     margin: 0 auto;
 }
 
 .loan-eligibility-summary {
-    background: white;
+    background: #121212;
     border-radius: 20px;
     padding: 2.5rem;
     margin-bottom: 3rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-                0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
 }
@@ -61,11 +57,11 @@
     left: 0;
     width: 100%;
     height: 6px;
-    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    background: linear-gradient(90deg, #00ff9d, #00cc7a);
 }
 
 .loan-eligibility-summary h2 {
-    color: #1e40af;
+    color: #00ff9d;
     font-size: 1.75rem;
     margin-bottom: 2rem;
     display: flex;
@@ -75,7 +71,7 @@
 }
 
 .loan-eligibility-summary h2 svg {
-    color: #3b82f6;
+    color: #00ff9d;
 }
 
 .eligibility-details {
@@ -85,22 +81,23 @@
 }
 
 .detail-item {
-    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    background: #1e1e1e;
     padding: 2rem;
     border-radius: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
-    border: 1px solid rgba(203, 213, 225, 0.5);
+    border: 1px solid #333333;
 }
 
 .detail-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+    border-color: #00ff9d;
 }
 
 .detail-item label {
     font-size: 0.875rem;
-    color: #64748b;
+    color: #b3b3b3;
     display: block;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
@@ -110,21 +107,21 @@
 .detail-item span {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #0f172a;
+    color: #ffffff;
     display: block;
     letter-spacing: -0.025em;
 }
 
 .bank-selector {
-    background: white;
+    background: #121212;
     border-radius: 16px;
     padding: 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 .bank-selector h3 {
-    color: #1e40af;
+    color: #00ff9d;
     font-size: 1.25rem;
     margin-bottom: 1.5rem;
 }
@@ -136,37 +133,42 @@
 }
 
 .bank-option {
-    background: #f8fafc;
+    background: #1e1e1e;
     border: 2px solid transparent;
     border-radius: 12px;
     padding: 1.5rem;
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    color: #ffffff;
 }
 
 .bank-option:hover {
-    background: #f1f5f9;
-    border-color: #3b82f6;
+    background: #262626;
+    border-color: #00ff9d;
 }
 
 .bank-option.selected {
-    background: #eff6ff;
-    border-color: #3b82f6;
+    background: #262626;
+    border-color: #00ff9d;
 }
 
-.bank-option img {
-    width: 120px;
-    height: auto;
-    margin-bottom: 1rem;
+.bank-option h4 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.bank-option p {
+    color: #b3b3b3;
+    font-size: 0.875rem;
 }
 
 .calculator-section {
-    background: white;
+    background: #121212;
     border-radius: 20px;
     padding: 2.5rem;
     margin-top: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 .gold-loan .loan-page-header h1 {
@@ -189,7 +191,7 @@
 }
 
 .rates-column {
-    background: white;
+    background: #121212;
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -218,11 +220,11 @@
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
-    background: #f8fafc;
+    background: #1e1e1e;
 }
 
 .employment-selector label:hover {
-    background: #e2e8f0;
+    background: #1e1e1e;
 }
 
 .employment-selector input[type="radio"]:checked + label {
@@ -231,14 +233,14 @@
 }
 
 .loan-notes {
-    background: #fffbeb;
-    border-radius: 12px;
+    background: #121212;
     padding: 1.5rem;
+    border-radius: 8px;
     margin-top: 2rem;
 }
 
 .loan-notes h3 {
-    color: #92400e;
+    color: #00ff9d;
     margin-bottom: 1rem;
     display: flex;
     align-items: center;
@@ -246,38 +248,45 @@
 }
 
 .loan-notes ul {
-    color: #78350f;
-    padding-left: 1.5rem;
+    list-style-type: none;
+    padding: 0;
 }
 
 .loan-notes li {
+    color: #ffffff;
     margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
 }
 
-/* Responsive Design */
+.loan-notes li::before {
+    content: '•';
+    color: #00ff9d;
+}
+
+.button {
+    background: #00ff9d;
+    color: #000000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background: #00cc7d;
+    transform: translateY(-2px);
+}
+
 @media (max-width: 768px) {
-    .loan-page-container {
-        padding: 1rem;
-    }
-
     .loan-page-header h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
-
-    .loan-eligibility-summary {
-        padding: 1.5rem;
-    }
-
-    .detail-item {
-        padding: 1.5rem;
-    }
-
-    .rates-section {
+    
+    .loan-features {
         grid-template-columns: 1fr;
     }
-
-    .employment-selector {
-        flex-direction: column;
-        align-items: center;
-    }
-} 
+}

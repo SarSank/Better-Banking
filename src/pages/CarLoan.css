@@ -2,11 +2,127 @@
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    background: #000000;
+    color: #ffffff;
 }
 
 .car-loan-container h1 {
     text-align: center;
-    color: #2c3e50;
+    color: #00ff9d;
     margin-bottom: 2rem;
     font-size: 2.5rem;
-} 
+    animation: fade-in 0.6s ease-out forwards;
+    font-weight: 600;
+}
+
+.car-loan-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+    animation: fade-in 0.6s ease-out forwards;
+}
+
+.loan-option-card {
+    background: #121212;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    border: 1px solid #333333;
+}
+
+.loan-option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+.loan-option-card h3 {
+    color: #00ff9d;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.loan-option-card p {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.car-loan-calculator {
+    background: #121212;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    margin-top: 2rem;
+    border: 1px solid #333333;
+}
+
+.car-loan-calculator h2 {
+    color: #00ff9d;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.calculator-form {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.form-group input {
+    background: #1e1e1e;
+    border: 1px solid #333333;
+    color: #ffffff;
+    padding: 0.75rem;
+    border-radius: 4px;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #00ff9d;
+    box-shadow: 0 0 0 2px rgba(0, 255, 157, 0.2);
+}
+
+.car-loan-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.feature-card {
+    background: #121212;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+    border: 1px solid #333333;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card h3 {
+    color: #00ff9d;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: #ffffff;
+}
